@@ -1,0 +1,367 @@
+options
+  background color 80 80 80 # dark grey
+  set &maxMathRT1 999999 ## at start, essentially unlimited time, but in Block 2, we calculate needed time
+  set &maxMathRT2 60000  ## long time for answer (up to minute, but people will respond more quickly)
+
+include bitmaps.txt
+
+fonts
+  regular arial 20
+  medium  arial 30
+  large   arial 40
+
+part createMathProblem
+  # -- create math problem with answer between 1 and 9 -----------------------
+  #    choose numbers until answer is within simple 1 to 9 range
+  set $mathProblemCounter increase ## we create multiple ones and keep track
+  set $answer 0
+  while $answer < 1 or $answer > 9
+    set $operation1 random 1 2 # 1 = multiply , 2 = division
+    set $operation2 random 1 2 # 1 = add , 2 = subtract
+    set $digit1 random from 2 4 6 8 10 # only even numbers
+    set $digit2 random 1 2
+    set $digit3 random 1 5
+    if $operation1 = 1 and $operation2 = 1     # * and +
+      set $answer expression $digit1 * $digit2 + $digit3
+    fi
+    if $operation1 = 1 and $operation2 = 2     # * and -
+      set $answer expression $digit1 * $digit2 - $digit3
+    fi
+    if $operation1 = 2 and $operation2 = 1     # / and +
+      set $answer expression $digit1 / $digit2 + $digit3
+    fi
+    if $operation1 = 2 and $operation2 = 2     # / and -
+      set $answer expression $digit1 / $digit2 - $digit3
+    fi
+  while-end
+  # -- now set the alternative (wrong) answer ---------------------------------
+  set &&wrongAnswerOptions range 1 10
+  set &&wrongAnswerOptions remove value $answer
+  set $wrongAnswer &&wrongAnswerOptions use random ## take one random from possible wrong anwers
+  # -- now choose what is show, correct or wrong answer
+  set $mathMCQ random 1 2 ## this is needed later for determining if answer was correct
+  if $mathMCQ = 1 ## correct answer is shown
+    set $showPossibleMathAnswer $answer
+  else
+    set $showPossibleMathAnswer $wrongAnswer
+  fi
+  # -- now make the operation is text format ----------------------------------
+  if $operation1 == 1
+    set %operation1text "×"
+  else
+    set %operation1text "÷"
+  fi
+  if $operation2 == 1
+    set %operation2text "+"
+  else
+    set %operation2text "-"
+  fi
+  # -- now create the math problem text
+  set %mathProblem "( " $digit1 " " %operation1text " " $digit2 " ) " %operation2text " " $digit3 " = ?"
+  # -- finally, we store the math problems for later use
+  set %%mathProblems append %mathProblem ## the full texts of the mathproblems (there will be up to 7)
+  # CHECK IF FOLLOWING LINE IS NEEDED
+  set &&mathProblemsAnswerStimuli append $showPossibleMathAnswer ## answers will be correct or not, they will be in here
+  set &&mathProblems_correct append $mathMCQ ## for correct answers contains 1, for wrong answers 2
+
+task aoSpan
+  set $currentSetSize &&setSizesForBlock remove first ## this randomly selects setsize as set at start of each block
+  set &&trialMathScores clear ## needed for adding math scores of one trial, needs resetting each trial
+  set %allletters "F H J K L N P Q R S T Y"
+  set %%lettersText split %allletters
+  # -- only one time in the whole experiment will we calculate the needed max RT for math solving as in paper
+  if &determineMathMaxRT = 1
+    set $tmpLen &&mathRT1s size
+    if $tmpLen > 0 ## people have to done at least some trials correctly
+      set &determineMathMaxRT 0 # this way, this will not be called again
+      set $tmpMean &&mathRT1s mean
+      set $tmpSD   &&mathRT1s sd
+      set &maxMathRT1 expression 2 * $tmpSD + $tmpMean
+    fi
+  fi
+  # -- create 7 different math problems (you only need as many as the $currentSetSize, but this is easier coding
+  #
+  set %%mathProblems " "
+  set %%mathProblems clear ## the full texts of the mathproblems (there will be up to 7)
+  set &&mathProblemsAnswerStimuli clear ## answers will be correct or not, they will be in here
+  set &&mathProblems_correct clear ## for correct answers contains 1, for wrong answers 2
+  part createMathProblem
+  part createMathProblem
+  part createMathProblem
+  part createMathProblem
+  part createMathProblem
+  part createMathProblem
+  part createMathProblem
+  #
+  # -- now draw letters from setsize -------------------------------------------
+  set &&letterOptions range 1 12
+  set &&lettersNumbers sample $currentSetSize from &&letterOptions
+  # save "Remember letters (as numbers): " &&lettersNumbers
+  ##
+  ## -- now all stimuli are ready for presentation -----------------------------
+  ##
+  ## now we cycle through math problems and letters using a while loop
+  set $counter 1
+  while $counter <= $currentSetSize
+    ## ---------------------------- show math problem (if needed)
+    if &components = 2 or &components = 3 ## 2 or 3 : maths only or both tasks
+      font medium
+      show text %%mathProblems[$counter]
+      show bitmap keyReady 0 100
+      readmouse l 1 &maxMathRT1 range SHOW_COUNTER SHOW_COUNTER
+      set $mathRT1 RT ## use this for later maxMathRT calculation
+      clear -1 -2
+      ## ---------------------------- show possible answer and True/False
+      show text &&mathProblemsAnswerStimuli[$counter] 0 0
+      show bitmap keyTrue  -200 100
+      set $trueStimulus SHOW_COUNTER
+      show bitmap keyFalse  200 100
+      set $falseStimulus SHOW_COUNTER
+      ## -- now if this is a correct answer, the correct key is $trueStimulus, otherwise $falseStimulus
+      # save "all mathProblemsAnswerStimuli : " &&mathProblems_correct
+      # save &&mathProblems_correct[$counter]
+      if &&mathProblems_correct[$counter] = 1
+        set $expectedResponse $trueStimulus
+      else
+        set $expectedResponse $falseStimulus
+      fi
+      # save "expected math response stimulus : " $expectedResponse " of options : " $trueStimulus $falseStimulus
+      readmouse l $expectedResponse &maxMathRT2 range $trueStimulus $falseStimulus ## $expectedResponse is the correct stimulus to be clicked
+      set $mathRT2 RT ## use this for later maxMathRT calculation
+      clear -1 -2 -3
+      ## -- check if correct
+      if STATUS = CORRECT
+        set &&trialMathScores append 1       ## this is for the trial calculation
+	set &&mathCorrectBlockCount append 1 ## this is for the whole block percentage correct
+	set &&mathRT1s append $mathRT1       ## we collect this to later determine max RT time in real block (as in paper)
+	set &&mathRT2s append $mathRT2
+      else
+        set &&trialMathScores append 0       ## this is for the trial calculation
+	set &&mathCorrectBlockCount append 0 ## this is for the whole block percentage correct
+      fi
+    fi # end of showing math problem
+    ## ---------------------------- show letter to memorize on yellow background (if needed)
+    if &components = 1 or &components = 3 # 1 or 3 : letters only or both tasks
+      set $tmp &&lettersNumbers[$counter]
+      font large
+      show rectangle 0 0 150 100 yellow
+      show text %%lettersText[$tmp] 0 0 black
+      delay 800
+      clear -1 -2
+    fi
+    set $counter increase
+  while-end
+  ## ---------------------------------------------------------------------------
+  ## now that all letters have been shown, we do the recall (if needed)
+  ## ---------------------------------------------------------------------------
+  if &components = 1 or &components = 3 ## 1 or 3 : letters only or both tasks
+    ##
+    ## first show the pad with 12 letters, a blank, clear and exit
+    ##
+    set $left -100
+    set $right 100
+    set $line1 -250 # they are 80 px apart
+    set $line2 -170
+    set $line3 -90
+    set $line4 -10
+    set $line5 70
+    set $line6 150
+    #
+    if &PADINSTRUCTION < 3 ## only need to show this twice
+      show bitmap instructionPad -270 -200
+      set &PADINSTRUCTION increase
+    fi
+    #
+    show bitmap keyF $left  $line1
+    show bitmap keyH    0   $line1
+    show bitmap keyJ $right $line1
+    #
+    show bitmap keyK $left  $line2
+    show bitmap keyL    0   $line2
+    show bitmap keyN $right $line2
+    #
+    show bitmap keyP $left  $line3
+    show bitmap keyQ    0   $line3
+    show bitmap keyR $right $line3
+    #
+    show bitmap keyS $left  $line4
+    show bitmap keyT    0   $line4
+    show bitmap keyY $right $line4
+    #
+    show bitmap keyQuestionMark 0 $line5
+    #
+    show bitmap keyDelete -200  250
+    show bitmap keyDone    250  250
+    set $counterKeyDone SHOW_COUNTER
+    set $counterKeyDelete expression SHOW_COUNTER - 1
+    set $beginKeyRange expression SHOW_COUNTER - 14
+    set $endKeyRange expression SHOW_COUNTER
+    #
+    ##------------------------------------------------------------------------------
+    # now let people key in buttons
+    set $startPosition -300
+    set &&selectedKeys clear
+    timestamp letterTaskstartTime ## set the starttime, we need this for calculating total RT
+    while $pressedKey != $counterKeyDone
+      readmouse l 1 999999 range $beginKeyRange $endKeyRange
+      set $pressedKey UNDER_MOUSE
+      set $tmpLength &&selectedKeys size ## length before adding
+      if $pressedKey == $counterKeyDelete
+        if $tmpLength > 0
+          set &&selectedKeys remove last
+          set $tmpStimulusLetter &&selectedStimuli remove last
+          clear $tmpStimulusLetter
+          set $startPosition decrease 60
+        fi
+      else
+        ## you cannot enter more than 7 keys
+        if $tmpLength < 7
+          set $keyPressedCount expression $pressedKey - $beginKeyRange + 1
+          set &&selectedKeys    append $keyPressedCount
+          ## now we need to calculate the bitmap number of the keypressed
+          ## bitmaps have numbers (not just names): keyF = 1 etc
+          set $tmpBitmapNumber expression $keyPressedCount
+          show bitmap $tmpBitmapNumber $startPosition $line6
+          set &&selectedStimuli append SHOW_COUNTER
+          set $startPosition increase 60
+        fi
+      fi
+    while-end
+    timestamp currentTime
+    set $letterTaskRT timestamp-diff letterTaskstartTime currentTime
+  fi
+  ## ------------------------------------------------------------
+  ## now calculate the scoring for the trial
+  ## ------------------------------------------------------------
+  ## how many letters correct?
+  ## for this, we cycle through all letters needed
+  set $counter 1
+  while $counter <= $currentSetSize
+    if &&selectedKeys[$counter] = &&lettersNumbers[$counter]
+      set $trialSumLetterScore increase
+      set &&lettersCorrectBlockCount append 1 # if correct (this is for overall correct letter count)
+    else
+      set &&lettersCorrectBlockCount append 0 # if incorrect (this is for overall correct letter count)
+    fi
+    set $counter increase
+  while-end
+  ## -- how many math problems correct and errors? --
+  set $trialSumMathScore &&trialMathScores sum
+  set $trialMathErrors expression $currentSetSize - $trialSumMathScore
+  ## -- over whole block, we calculate percentage of correct math problems
+  if &components > 1 ## only if math is used (not in block 1)
+    set $tmpCorrectCount      &&mathCorrectBlockCount sum
+    set $tmpMathProblemsSoFar &&mathCorrectBlockCount size
+    set $mathCorrectPerc expression $tmpCorrectCount / $tmpMathProblemsSoFar * 100
+    set $mathCorrectPerc round
+  fi
+  ## -- trial feedback to participant
+  clear screen
+  ## make sure you use different word for singular/plural of "letter" and "error"
+  if $trialSumLetterScore = 1
+    set %letterScoreFeedback "You recalled " $trialSumLetterScore " letter correctly out of " $currentSetSize
+  else
+    set %letterScoreFeedback "You recalled " $trialSumLetterScore " letters correctly out of " $currentSetSize
+  fi
+  if $trialMathErrors = 1
+    set %mathScoreFeedback "You made " $trialMathErrors " mathematics error out of " $currentSetSize " problems."
+  else
+    set %mathScoreFeedback "You made " $trialMathErrors " mathematics errors out of " $currentSetSize " problems."
+  fi
+  set %mathPercentageCorrect "Percentage correct mathemathics problems: " $mathCorrectPerc "%"
+  # -- make sure that if you do letters-only or math-only, you only show relevant feedback
+  if &components = 1 # letters only feedback, delete math feedback
+    set %mathScoreFeedback " "
+    set %mathPercentageCorrect " "
+  fi
+  if &components = 2 # math only feedback, delete letter fe
+    set %letterScoreFeedback " "
+  fi
+  # -- ospan score so far (if in real block)
+  if BLOCKNUMBER = 4 and $trialMathErrors = 0 and $trialSumLetterScore = $currentSetSize
+    set &ospan increase $currentSetSize # o-span points are the sequence length
+  fi
+  if BLOCKNUMBER = 4 ## correct letters and math correct even if not all correct
+    set &lettersCorrectSoFar increase $trialSumLetterScore
+    set &mathCorrectSoFar increase $trialSumMathScore
+  fi
+  # -- show feedback on screen
+  font regular
+  if &components > 1 ## only show math correct percentage if there are math problems
+    show rectangle 0 -100 755 45 red
+    show rectangle 0 -100 750 40 yellow
+    show text %mathPercentageCorrect 0 -100 blue
+  fi
+  show text %letterScoreFeedback 0 0
+  show text %mathScoreFeedback 0 100
+  show bitmap keyContinue 0 200
+  readmouse l 1 999999
+  clear screen
+  ## -- save to file -----------------------------------------
+  save BLOCKNUMBER BLOCKNAME &ospan &lettersCorrectSoFar &mathCorrectSoFar $mathRT1 $letterTaskRT &maxMathRT1 $mathCorrectPerc $currentSetSize $trialSumMathScore $trialMathErrors $trialSumLetterScore
+
+task feedbackTask
+  show bitmap feedbackscreen
+  show bitmap keyContinue 300 241
+  set $ospanScorePerc expression &ospan / 75
+  set $ospanScorePerc round
+  set %ospanScoreText &ospan " points (" $ospanScorePerc "%)"
+  #-- individual math problems and letters
+  set $totalMathProblems   &&mathCorrectBlockCount size
+  set $totalMathCorrect    &&mathCorrectBlockCount sum
+  set $totalLetters        &&lettersCorrectBlockCount size
+  set $totalLettersCorrect &&lettersCorrectBlockCount sum
+  #-- now calculate percentage maths problems (including indivual trials within trials)
+  set $mathCorrectPerc expression $totalMathCorrect / $totalMathProblems * 100
+  set $mathCorrectPerc round
+  set %mathCorrectPercText $mathCorrectPerc "%"
+  #-- now calculate percentage letters correct (not just whole suquences but individuals)
+  set $lettersCorrectPerc expression $totalLettersCorrect / $totalLetters * 100
+  set $lettersCorrectPerc round
+  set %lettersCorrectPercText $lettersCorrectPerc "%"
+  #-- now show on top of the feedback screen
+  text align left
+  show text %ospanScoreText 50 -200 black
+  show text %mathCorrectPercText 50 -100 black
+  show text %lettersCorrectPercText 50 -30 black
+  readmouse l 2 999999 range 2 2
+
+#######################################################################################
+
+block practiseLetters
+  message instruction1 mouse
+  set &&setSizesForBlock 2 2 3 3 ## 4 trials
+  set &components 1 # 1=letters only
+  task aoSpan 4
+
+block practiseMath
+  message instruction2 mouse
+  set &&mathRT1s clear ## these will be used to calculate better maxRT
+  set &&mathRT2s clear
+  set &&setSizesForBlock 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 # this is irrelevant here, but you need some data in it
+  set &components 2 # 2=math only
+  task aoSpan 15
+
+block practiseBoth
+  set &determineMathMaxRT 1 # only one time we need to calculate
+  set &&mathCorrectBlockCount clear 0 # reset to zero (for counting percentage of correct math trials)
+  message instruction3 mouse
+  set &&setSizesForBlock 2 2 2
+  set &components 3 # 3=math and letters
+  task aoSpan 3
+
+block maindata
+  set &components 3 # 3=math and letters
+  set &&lettersCorrectBlockCount clear 0 # reset to zero
+  set &&mathCorrectBlockCount clear 0 # reset to zero
+  set &&tmpData 3 4 5 6 7
+  set &&setSizesForBlock &&tmpData times 3 # 3 x 5 = sequences = 15 trials
+  set &&setSizesForBlock shuffle
+  message instruction4 mouse
+  task aoSpan 15
+
+## this final feedback block is not needed
+## if you do not use it, you can calculate all data later offline
+
+block feedbackBlock
+  task feedbackTask 1
