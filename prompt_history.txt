@@ -65,13 +65,11 @@ Result: a second tab, "Mobilanvändning (SAS-SV)".
 Attached: "Enkät om mobilanvändning (Exempel Svar).csv" (exemaple survey answers)
 
 
-"Jag skulle säga att SAS score verkar vara en dålig indikator på
-presentand på Ospan testet - och det som hade bättre poäng var det
-som mer "mobil beroende""
+Uppdatera SAS-poängen så att den baseras på samtliga tio påståenden. 
+Kom också ihåg att cutoff-gränsen är 31 för män och 33 för kvinnor.
 
-[I would say the SAS score seems to be a poor indicator of performance
-on the OSPAN test – and those who scored better were the ones who
-were more "phone dependent".]
+[Update the SAS score so that it is based on all ten statements. 
+Also remember that the cutoff score is 31 for men and 33 for women.]
 
 Result: an analysis of the claim, and changes to the app so that it
 reads the complete survey file correctly.
