@@ -64,7 +64,6 @@ Result: a second tab, "Mobilanvändning (SAS-SV)".
 --- Prompt 3 · 4 October 2026 --------------------------------------
 Attached: "Enkät om mobilanvändning (Exempel Svar).csv" (exemaple survey answers)
 
-
 Uppdatera SAS-poängen så att den baseras på samtliga tio påståenden. 
 Kom också ihåg att cutoff-gränsen är 31 för män och 33 för kvinnor.
 
