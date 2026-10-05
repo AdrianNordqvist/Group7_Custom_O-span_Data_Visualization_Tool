@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Xcode: personliga inställningar och byggresultat
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/

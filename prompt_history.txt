@@ -1,0 +1,133 @@
+PROMPT HISTORY – OspanSammanstallning (OSPAN data compilation app)
+====================================================================
+
+Tool:      Claude Code in the Claude desktop app
+Model:     Claude Opus 5.5
+Period:    30 September – 5 October 2026 (one continuous session)
+Project:   ~/Documents/Studier/02 KP/OspanSammanstallning/
+Program:   macOS app written in Swift (SwiftUI and Swift Charts), built in Xcode
+
+How to read this file
+---------------------
+
+Every prompt is quoted exactly as it was written, in Swedish and with the
+original spelling. An English translation follows in square brackets.
+"Attached" means a file was attached to the prompt.
+
+
+PROMPTS THAT BUILT THE PROGRAM
+====================================================================
+
+--- Prompt 1 · 30 September 2026 -----------------------------------
+Attached: "OspanExempleFile.csv" (an empty template with the 13 OSPAN column names)
+
+"gör en program i xcode som jag kan ladda upp all test data, lägger
+ihop allt, och skapar en stor csv där vi kan lätt jämföra alla
+resultat på ospan och deras tider"
+
+[Make a program in Xcode where I can upload all the test data, that
+merges everything and creates one big CSV where we can easily compare
+all OSPAN results and their times.]
+
+Result: the first version of the app.
+  - Reads the OSPAN test's .csv files and the older .txt files, one
+    file per participant, by drag and drop or from a whole folder.
+  - Reads the condition (with phone / without phone) and the
+    participant's name from the file name.
+  - Flags files with identical data, incomplete runs and test runs,
+    and leaves them out by default.
+  - Shows one row per participant and a comparison of the two
+    conditions (mean and standard deviation).
+  - Exports three CSV files: one row per participant, all rows in long
+    format, and the group comparison.
+
+
+--- Prompt 2 · 30 September 2026 -----------------------------------
+Attached: "Enkät om mobilanvändning (Exempel Svar).csv" (exemaple survey answers)
+
+"Nu gör en flik där jag kan tolka datan från denna:
+https://www.healthyscreens.com/sas-sv.pdf"
+
+[Now make a tab where I can interpret the data from this one:
+https://www.healthyscreens.com/sas-sv.pdf]
+
+Result: a second tab, "Mobilanvändning (SAS-SV)".
+  - Scores each survey answer 1–6 according to the Smartphone Addiction
+    Scale – Short Version (Swedish and English answer labels).
+  - Shows the total score and whether it is below or above the cutoff.
+  - Links each survey answer to the OSPAN run saved closest in time.
+  - Shows the scores per condition, the correlation with OSPAN and the
+    mean per question.
+  - Adds the SAS-SV columns to the CSV export.
+
+
+--- Prompt 3 · 4 October 2026 --------------------------------------
+Attached: "Enkät om mobilanvändning (Exempel Svar).csv" (exemaple survey answers)
+
+
+"Jag skulle säga att SAS score verkar vara en dålig indikator på
+presentand på Ospan testet - och det som hade bättre poäng var det
+som mer "mobil beroende""
+
+[I would say the SAS score seems to be a poor indicator of performance
+on the OSPAN test – and those who scored better were the ones who
+were more "phone dependent".]
+
+Result: an analysis of the claim, and changes to the app so that it
+reads the complete survey file correctly.
+  - All 10 questions are read, with their question texts.
+  - The cutoff is chosen by gender (31 for men, 33 for women).
+  - The survey's own column with the OSPAN file name is used to link
+    each answer to the right participant.
+  - The survey's other number scales are no longer mistaken for SAS-SV
+    questions.
+
+
+--- Prompt 4 · 5 October 2026 --------------------------------------
+
+"kan nu bygga en vy där vi kan expoerta olika grafer, stapeldiagram
+och liknande baserat på datan?"
+
+[Can you now build a view where we can export different graphs, bar
+charts and similar, based on the data?]
+
+Result: a third tab, "Diagram".
+  - Six chart types: mean per group with error bars, box plot, one bar
+    per participant, scatter plot with trend line, results per set
+    size, and SAS-SV per question.
+  - Choice of measure, grouping (condition, gender or SAS level),
+    error bars, title and size.
+  - Export as PNG or PDF, or copy to the clipboard.
+  - A suggested figure caption and a table of the values behind each
+    chart.
+
+
+--- Prompt 5 · 5 October 2026 --------------------------------------
+Attached: "Enkät om mobilanvändning (Exempel Svar v2).csv" (exemaple survey answers)
+
+"kan du också ta med antal timmar skärmtid och utvildad och stress
+faktorn"
+
+[Can you also include the number of hours of screen time and the
+rested and stress factors.]
+
+Result: the survey's other number questions became measures of their
+own: screen time, how often the participant thought about the phone
+during the test, how rested and how stressed they felt before the test.
+They appear in the survey tab, in the CSV export and as measures in the
+charts. Screen time was answered in ranges and is counted as the
+midpoint of the range.
+
+
+--- Prompt 6 · 5 October 2026 --------------------------------------
+
+"i graf vyn kan göra så att jag kan byta språk till engelska för
+texterna i grafen (då presentation ska vara på engelska)"
+
+[In the graph view, can you make it possible to switch the language to
+English for the texts in the graph (since the presentation will be in
+English).]
+
+Result: a language switch in the chart tab (Svenska / English). In
+English, the title, explanation, axes, group names, question labels,
+number format and suggested caption are all in English.
