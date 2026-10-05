@@ -1,12 +1,34 @@
 # OSPAN Data Compilation and Visualization Tool
 
-A macOS app that merges result files from an Operation Span (OSPAN) working-memory test, scores a phone-use survey, compares experimental conditions, and exports tables and charts.
+This repository holds two things:
+
+- **The OSPAN test** the participants took: a Swedish version of the Automated Operation Span task, a working-memory test.
+- **A macOS app** that merges the result files from the test, scores a phone-use survey, compares experimental conditions, and exports tables and charts.
 
 Group 7 built it for a cognitive psychology course project. The study asks whether having a smartphone on the desk during the test affects working-memory performance, so the app compares two conditions: *with phone* and *without phone*.
 
 The app's interface is in Swedish. The text inside exported charts can be switched to English.
 
-## What it does
+## The OSPAN test
+
+The folder `O-span Test Svenska 10 trails` holds the test. It is an adaptation of the [Automated Operation Span task](https://www.psytoolkit.org/experiment-library/aospan.html) from the PsyToolkit experiment library, with these changes:
+
+- The instructions and feedback texts are in Swedish.
+- The main block has 10 sets (set sizes 3–7, twice each) instead of 15.
+- The practice is shorter: 2 letter sets, 4 math problems and 1 combined set.
+
+There are two ways to run it:
+
+| Version | File | How to use it |
+|---|---|---|
+| Offline | `OfflineOpsanTest10trials.html` | Open the file in a web browser. It needs no internet connection. |
+| PsyToolkit | `OspanSvenska10trials_psytoolkit.zip` | Log in at https://www.psytoolkit.org/c/3.7.2/, create a new experiment from a zip file, upload the zip and compile it. |
+
+The other files in the folder are the contents of the zip: the script `aospan.psy`, the images and the experiment's description files.
+
+**Getting the results out of the offline version.** When the test ends, it offers *Show data* and *Copy data to clipboard*. Paste the data into a plain text file (`.txt`), one file per participant, and name the file as described under [Input files](#input-files). The app reads that file as it is.
+
+## What the app does
 
 The app has three tabs.
 
@@ -99,6 +121,7 @@ Standard deviations use n − 1. Quartiles use linear interpolation, the same as
 
 | Path | Contents |
 |---|---|
+| `O-span Test Svenska 10 trails/` | The OSPAN test: offline version, PsyToolkit zip and its source files |
 | `OspanSammanstallning/Modell/` | Parsing, scoring, statistics and CSV export |
 | `OspanSammanstallning/Vyer/` | The three tabs and the chart view |
 | `OspanExempleFile.csv` | The column layout of an OSPAN result file |
@@ -113,7 +136,17 @@ The repository holds no participant data. Result files and survey answers stay o
 
 The app was written with Claude Code (Claude Opus 5.5). `prompt_history.txt` lists every prompt, with an English translation.
 
-## Reference
+## References
+
+The OSPAN test is built with PsyToolkit and based on its library version of the task:
+
+Stoet, G. (2010). PsyToolkit: A software package for programming psychological experiments using Linux. *Behavior Research Methods, 42*(4), 1096–1104. https://doi.org/10.3758/BRM.42.4.1096
+
+Stoet, G. (2017). PsyToolkit: A novel web-based method for running online questionnaires and reaction-time experiments. *Teaching of Psychology, 44*(1), 24–31. https://doi.org/10.1177/0098628316677643
+
+Unsworth, N., Heitz, R. P., Schrock, J. C., & Engle, R. W. (2005). An automated version of the operation span task. *Behavior Research Methods, 37*(3), 498–505. https://doi.org/10.3758/BF03192720
+
+The survey scoring follows the Smartphone Addiction Scale – Short Version:
 
 Kwon, M., Kim, D.-J., Cho, H., & Yang, S. (2013). The Smartphone Addiction Scale: Development and validation of a short version for adolescents. *PLOS ONE, 8*(12), e83558. https://doi.org/10.1371/journal.pone.0083558
 

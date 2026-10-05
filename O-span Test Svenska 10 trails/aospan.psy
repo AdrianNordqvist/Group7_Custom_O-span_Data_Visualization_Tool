@@ -257,18 +257,14 @@ task aoSpan
   fi
   ## -- trial feedback to participant
   clear screen
-  ## make sure you use different word for singular/plural of "letter" and "error"
+  ## Swedish feedback texts. "bokstav" has a singular and a plural form; "matematikfel" is the same in both.
   if $trialSumLetterScore = 1
-    set %letterScoreFeedback "You recalled " $trialSumLetterScore " letter correctly out of " $currentSetSize
+    set %letterScoreFeedback "Du mindes " $trialSumLetterScore " bokstav rätt av " $currentSetSize
   else
-    set %letterScoreFeedback "You recalled " $trialSumLetterScore " letters correctly out of " $currentSetSize
+    set %letterScoreFeedback "Du mindes " $trialSumLetterScore " bokstäver rätt av " $currentSetSize
   fi
-  if $trialMathErrors = 1
-    set %mathScoreFeedback "You made " $trialMathErrors " mathematics error out of " $currentSetSize " problems."
-  else
-    set %mathScoreFeedback "You made " $trialMathErrors " mathematics errors out of " $currentSetSize " problems."
-  fi
-  set %mathPercentageCorrect "Percentage correct mathemathics problems: " $mathCorrectPerc "%"
+  set %mathScoreFeedback "Du gjorde " $trialMathErrors " matematikfel av " $currentSetSize " problem."
+  set %mathPercentageCorrect "Andel rätt matematikproblem: " $mathCorrectPerc "%"
   # -- make sure that if you do letters-only or math-only, you only show relevant feedback
   if &components = 1 # letters only feedback, delete math feedback
     set %mathScoreFeedback " "
@@ -303,9 +299,9 @@ task aoSpan
 task feedbackTask
   show bitmap feedbackscreen
   show bitmap keyContinue 300 241
-  set $ospanScorePerc expression &ospan / 75
+  set $ospanScorePerc expression &ospan / 50 * 100 ## 10 sets give at most 50 points
   set $ospanScorePerc round
-  set %ospanScoreText &ospan " points (" $ospanScorePerc "%)"
+  set %ospanScoreText &ospan " poäng (" $ospanScorePerc "%)"
   #-- individual math problems and letters
   set $totalMathProblems   &&mathCorrectBlockCount size
   set $totalMathCorrect    &&mathCorrectBlockCount sum
@@ -330,35 +326,35 @@ task feedbackTask
 
 block practiseLetters
   message instruction1 mouse
-  set &&setSizesForBlock 2 2 3 3 ## 4 trials
+  set &&setSizesForBlock 2 3 ## 2 trials
   set &components 1 # 1=letters only
-  task aoSpan 4
+  task aoSpan 2
 
 block practiseMath
   message instruction2 mouse
   set &&mathRT1s clear ## these will be used to calculate better maxRT
   set &&mathRT2s clear
-  set &&setSizesForBlock 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 # this is irrelevant here, but you need some data in it
+  set &&setSizesForBlock 1 1 1 1 # this is irrelevant here, but you need some data in it
   set &components 2 # 2=math only
-  task aoSpan 15
+  task aoSpan 4
 
 block practiseBoth
   set &determineMathMaxRT 1 # only one time we need to calculate
   set &&mathCorrectBlockCount clear 0 # reset to zero (for counting percentage of correct math trials)
   message instruction3 mouse
-  set &&setSizesForBlock 2 2 2
+  set &&setSizesForBlock 2
   set &components 3 # 3=math and letters
-  task aoSpan 3
+  task aoSpan 1
 
 block maindata
   set &components 3 # 3=math and letters
   set &&lettersCorrectBlockCount clear 0 # reset to zero
   set &&mathCorrectBlockCount clear 0 # reset to zero
   set &&tmpData 3 4 5 6 7
-  set &&setSizesForBlock &&tmpData times 3 # 3 x 5 = sequences = 15 trials
+  set &&setSizesForBlock &&tmpData times 2 # 2 x 5 = sequences = 10 trials
   set &&setSizesForBlock shuffle
   message instruction4 mouse
-  task aoSpan 15
+  task aoSpan 10
 
 ## this final feedback block is not needed
 ## if you do not use it, you can calculate all data later offline
