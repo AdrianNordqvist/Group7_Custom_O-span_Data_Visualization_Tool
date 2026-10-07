@@ -38,7 +38,7 @@ struct ContentView: View {
             } else {
                 VStack(spacing: 0) {
                     TabView(selection: $flik) {
-                        Tab("OSPAN", systemImage: "brain.head.profile", value: Flik.ospan) {
+                        Tab("O-Span", systemImage: "brain.head.profile", value: Flik.ospan) {
                             ospanFlik
                         }
                         Tab("Mobilanvändning (SAS-SV)", systemImage: "iphone", value: Flik.enkat) {
@@ -94,9 +94,9 @@ struct ContentView: View {
 
     private var tomVy: some View {
         ContentUnavailableView {
-            Label("Släpp OSPAN-filer här", systemImage: "tray.and.arrow.down")
+            Label("Släpp O-Span-filer här", systemImage: "tray.and.arrow.down")
         } description: {
-            Text("Dra in .csv- eller .txt-filer från OSPAN-testet och enkätsvaren från Google Formulär – eller en hel mapp. Villkoret (med/utan mobil) läses av från filnamnet och kan ändras i tabellen efteråt.")
+            Text("Dra in .csv- eller .txt-filer från O-Span-testet och enkätsvaren från Google Formulär – eller en hel mapp. Villkoret (med/utan mobil) läses av från filnamnet och kan ändras i tabellen efteråt.")
         } actions: {
             Button("Välj filer eller mapp …") { visarImport = true }
                 .buttonStyle(.borderedProminent)
@@ -107,9 +107,9 @@ struct ContentView: View {
     private var ospanFlik: some View {
         if data.deltagare.isEmpty {
             ContentUnavailableView {
-                Label("Inga OSPAN-filer inlästa", systemImage: "brain.head.profile")
+                Label("Inga O-Span-filer inlästa", systemImage: "brain.head.profile")
             } description: {
-                Text("Dra in .csv- eller .txt-filer från OSPAN-testet.")
+                Text("Dra in .csv- eller .txt-filer från O-Span-testet.")
             } actions: {
                 Button("Välj filer eller mapp …") { visarImport = true }
             }
@@ -166,7 +166,7 @@ struct ContentView: View {
             } label: {
                 Label("Lägg till filer", systemImage: "plus")
             }
-            .help("Lägg till OSPAN-filer, enkätsvar eller en mapp")
+            .help("Lägg till O-Span-filer, enkätsvar eller en mapp")
 
             Button {
                 visarRensa = true

@@ -1,6 +1,6 @@
 import Foundation
 
-/// En rad i OSPAN-testets utdata: ett set i huvuddelen eller en övningsomgång.
+/// En rad i O-Span-testets utdata: ett set i huvuddelen eller en övningsomgång.
 /// Kolumnerna är samma som testet sparar (KOLUMNER i OspanTestV1KPGrupp7_spara.html).
 nonisolated struct OspanRad: Hashable, Sendable {
     static let kolumner = [

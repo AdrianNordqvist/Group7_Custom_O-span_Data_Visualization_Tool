@@ -3,7 +3,7 @@
 @main
 struct OspanSammanstallningApp: App {
     var body: some Scene {
-        Window("OSPAN-sammanställning", id: "huvud") {
+        Window("O-Span-sammanställning", id: "huvud") {
             ContentView()
                 .frame(minWidth: 960, minHeight: 600)
         }

@@ -17,7 +17,7 @@ final class Sammanstallning {
     var meddelande: String?
 
     private static let filandelser: Set<String> = ["csv", "txt"]
-    /// Enkäten fylls i direkt efter testet: från 2 min före till 10 min efter att OSPAN-filen sparades.
+    /// Enkäten fylls i direkt efter testet: från 2 min före till 10 min efter att O-Span-filen sparades.
     private static let kopplingsfonster: ClosedRange<TimeInterval> = -120...600
 
     var medraknade: [Deltagare] {
@@ -33,7 +33,7 @@ final class Sammanstallning {
     }
 
     /// Enkätsvar → deltagare. Manuella val gäller först; övriga svar kopplas till den
-    /// medräknade OSPAN-omgång som ligger närmast i tid (inom `kopplingsfonster`).
+    /// medräknade O-Span-omgång som ligger närmast i tid (inom `kopplingsfonster`).
     var kopplingar: [EnkatSvar.ID: Deltagare] {
         var resultat: [EnkatSvar.ID: Deltagare] = [:]
         var upptagna = Set<Deltagare.ID>()
@@ -44,7 +44,7 @@ final class Sammanstallning {
             }
         }
 
-        // Enkäten kan själv peka ut filen, t.ex. en kolumn med OSPAN-filens namn.
+        // Enkäten kan själv peka ut filen, t.ex. en kolumn med O-Span-filens namn.
         for s in enkatsvar where s.koppling == .automatisk {
             if let d = deltagare(utpekadAv: s), !upptagna.contains(d.id) {
                 resultat[s.id] = d
@@ -96,7 +96,7 @@ final class Sammanstallning {
     // MARK: - Import
 
     /// Tar emot filer och/eller mappar (mappar gås igenom rekursivt efter .csv/.txt).
-    /// Varje fil tolkas som OSPAN-data eller som enkätsvar.
+    /// Varje fil tolkas som O-Span-data eller som enkätsvar.
     @discardableResult
     func importera(_ urls: [URL]) -> ImportResultat {
         var nya: [Deltagare] = []
@@ -138,7 +138,7 @@ final class Sammanstallning {
         }
         uppdatera()
 
-        var delar = ["Lade till \(nya.count) OSPAN-\(nya.count == 1 ? "fil" : "filer")"]
+        var delar = ["Lade till \(nya.count) O-Span-\(nya.count == 1 ? "fil" : "filer")"]
         if nyaSvar > 0 { delar.append("\(nyaSvar) enkätsvar") }
         if redanInlasta > 0 { delar.append("\(redanInlasta) fanns redan") }
         if !ejOspan.isEmpty {

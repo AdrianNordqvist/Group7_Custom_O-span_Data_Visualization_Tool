@@ -72,7 +72,7 @@ nonisolated struct Sammanfattning: Sendable {
     static let langder = 3...7
 
     var antalSet = 0
-    /// Absolut OSPAN: summan av set där alla bokstäver (och all matte) blev rätt – testets egen "ospan".
+    /// Absolut O-Span: summan av set där alla bokstäver (och all matte) blev rätt – testets egen "ospan".
     var ospanAbsolut = 0
     /// Partial score: antal bokstäver rätt totalt.
     var partial = 0
@@ -155,8 +155,8 @@ nonisolated enum Matt: String, CaseIterable, Identifiable, Sendable {
 
     var namn: String {
         switch self {
-        case .ospanAbsolut: "OSPAN absolut"
-        case .ospanPartial: "OSPAN partial"
+        case .ospanAbsolut: "O-Span absolut"
+        case .ospanPartial: "O-Span partial"
         case .partialProcent: "Bokstäver rätt"
         case .matteProcent: "Matte rätt"
         case .matteRTMedel: "Matte-RT medel"

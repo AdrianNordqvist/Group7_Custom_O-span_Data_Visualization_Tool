@@ -49,7 +49,7 @@ nonisolated enum Kon: String, Sendable {
     }
 }
 
-/// En övrig sifferfråga i enkäten (skärmtid, utvilad, stress …) som kan jämföras med OSPAN.
+/// En övrig sifferfråga i enkäten (skärmtid, utvilad, stress …) som kan jämföras med O-Span.
 nonisolated struct EnkatVariabel: Hashable, Identifiable, Sendable {
     let index: Int
     /// Frågan som den står i enkäten.
@@ -177,7 +177,7 @@ final class EnkatSvar: Identifiable {
     let kon: Kon?
     /// Övriga sifferfrågor, i samma ordning som `Sammanstallning.enkatVariabler`.
     let extra: [Double?]
-    /// Övriga celler på raden, t.ex. en kolumn där OSPAN-filens namn står.
+    /// Övriga celler på raden, t.ex. en kolumn där O-Span-filens namn står.
     let ovrigt: [String]
     let resultat: SASResultat?
     var koppling: Koppling = .automatisk

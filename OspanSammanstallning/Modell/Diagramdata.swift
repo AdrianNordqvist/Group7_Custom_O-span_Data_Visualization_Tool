@@ -103,7 +103,7 @@ nonisolated enum Diagramstorlek: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
-/// Ett mått per deltagare som kan ritas: OSPAN-måtten, SAS-SV-poängen och enkätens övriga sifferfrågor.
+/// Ett mått per deltagare som kan ritas: O-Span-måtten, SAS-SV-poängen och enkätens övriga sifferfrågor.
 nonisolated enum Diagrammatt: Hashable, Identifiable, Sendable {
     case ospan(Matt)
     case sas
@@ -242,7 +242,7 @@ struct Diagramunderlag {
         utanGrupp = medraknade.count - rader.count
         enkatrader = data.enkatsvar.compactMap { s in
             let d = kopplingar[s.id].flatMap { $0.medraknas ? $0 : nil }
-            // Villkoret kommer från OSPAN-omgången, så okopplade svar faller bort där.
+            // Villkoret kommer från O-Span-omgången, så okopplade svar faller bort där.
             if gruppering == .villkor && d == nil { return nil }
             return Self.grupp(gruppering, deltagare: d, enkat: s).map { Enkatrad(svar: s.svar, grupp: $0) }
         }

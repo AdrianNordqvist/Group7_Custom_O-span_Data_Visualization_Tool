@@ -10,7 +10,7 @@ struct EnkatFlik: View {
             ContentUnavailableView {
                 Label("Ingen enkät inläst", systemImage: "list.bullet.clipboard")
             } description: {
-                Text("Dra in svarsfilen från Google Formulär (.csv). Svaren poängsätts enligt SAS-SV (1–6 per fråga) och kopplas till OSPAN-omgången som sparades närmast i tid.")
+                Text("Dra in svarsfilen från Google Formulär (.csv). Svaren poängsätts enligt SAS-SV (1–6 per fråga) och kopplas till O-Span-omgången som sparades närmast i tid.")
             } actions: {
                 Button("Välj enkätfil …", action: valjFiler)
             }
@@ -65,7 +65,7 @@ private struct EnkatTabell: View {
                 Text(r.svar.tidText).monospacedDigit()
             }
             .width(min: 120, ideal: 135)
-            TableColumn("OSPAN-omgång", value: \EnkatRad.kod) { (r: EnkatRad) in
+            TableColumn("O-Span-omgång", value: \EnkatRad.kod) { (r: EnkatRad) in
                 KopplingCell(svar: r.svar, deltagare: data.deltagare, kopplad: r.deltagare)
             }
             .width(min: 180, ideal: 260)
@@ -75,7 +75,7 @@ private struct EnkatTabell: View {
             .width(min: 70, ideal: 80)
             TableColumn("Kön", value: \EnkatRad.kon)
                 .width(50)
-            TableColumn("OSPAN", value: \EnkatRad.ospan) { (r: EnkatRad) in
+            TableColumn("O-Span", value: \EnkatRad.ospan) { (r: EnkatRad) in
                 Siffra(r.deltagare.map { "\($0.sammanfattning.ospanAbsolut)" } ?? "–")
             }
             .width(50)
@@ -125,9 +125,9 @@ private struct KopplingCell: View {
             if kopplad == nil {
                 Image(systemName: "questionmark.circle.fill")
                     .foregroundStyle(.orange)
-                    .help("Enkäten pekar inte ut någon fil och ingen OSPAN-omgång sparades inom 2 min före till 10 min efter svaret. Välj deltagare i menyn.")
+                    .help("Enkäten pekar inte ut någon fil och ingen O-Span-omgång sparades inom 2 min före till 10 min efter svaret. Välj deltagare i menyn.")
             }
-            Picker("OSPAN-omgång", selection: $svar.koppling) {
+            Picker("O-Span-omgång", selection: $svar.koppling) {
                 Text(autoText).tag(EnkatSvar.Koppling.automatisk)
                 Text("Ingen").tag(EnkatSvar.Koppling.ingen)
                 Divider()
@@ -190,7 +190,7 @@ struct SASTolkningVy: View {
             omSkalan
             sektion("Alla svar") { allaSvar }
             sektion("Per villkor") { perVillkor }
-            sektion("Samband med OSPAN") { samband }
+            sektion("Samband med O-Span") { samband }
             sektion("Per fråga") { perFraga }
             if !data.enkatVariabler.isEmpty {
                 sektion("Övriga enkätfrågor") { ovrigaFragor }
@@ -307,7 +307,7 @@ struct SASTolkningVy: View {
             }
             .fixedSize(horizontal: true, vertical: false)
             if let med, let utan, let a = Statistik.medel(med.poang), let b = Statistik.medel(utan.poang) {
-                Text("Skillnad med − utan mobil: \(tal(a - b, tecken: true)) poäng. Ligger grupperna nära varandra har de liknande mobilvanor, och en skillnad i OSPAN beror då troligen inte på det.")
+                Text("Skillnad med − utan mobil: \(tal(a - b, tecken: true)) poäng. Ligger grupperna nära varandra har de liknande mobilvanor, och en skillnad i O-Span beror då troligen inte på det.")
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: 760, alignment: .leading)
@@ -326,8 +326,8 @@ struct SASTolkningVy: View {
                 GridRow {
                     Text("Grupp")
                     Text("n").gridColumnAlignment(.trailing)
-                    Text("r med OSPAN absolut").gridColumnAlignment(.trailing)
-                    Text("r med OSPAN partial").gridColumnAlignment(.trailing)
+                    Text("r med O-Span absolut").gridColumnAlignment(.trailing)
+                    Text("r med O-Span partial").gridColumnAlignment(.trailing)
                 }
                 .font(.subheadline.bold())
                 Divider()
@@ -342,7 +342,7 @@ struct SASTolkningVy: View {
                 }
             }
             .fixedSize(horizontal: true, vertical: false)
-            Text("Pearsons r mellan SAS-poäng och OSPAN. Nära 0 = inget samband; negativt r = högre SAS-poäng går ihop med lägre arbetsminnespoäng. Tumregel: |r| ≈ 0,1 svagt, 0,3 måttligt, 0,5 starkt. Med så här få deltagare per grupp är r mycket osäkert.")
+            Text("Pearsons r mellan SAS-poäng och O-Span. Nära 0 = inget samband; negativt r = högre SAS-poäng går ihop med lägre arbetsminnespoäng. Tumregel: |r| ≈ 0,1 svagt, 0,3 måttligt, 0,5 starkt. Med så här få deltagare per grupp är r mycket osäkert.")
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: 760, alignment: .leading)
@@ -387,7 +387,7 @@ struct SASTolkningVy: View {
 
     // MARK: Övriga frågor
 
-    /// Skärmtid, utvilad, stress …: nivå per villkor och samband med OSPAN och SAS.
+    /// Skärmtid, utvilad, stress …: nivå per villkor och samband med O-Span och SAS.
     private var ovrigaFragor: some View {
         let kopplade = data.enkatsvar.compactMap { s in kopplingar[s.id].flatMap { $0.medraknas ? (s, $0) : nil } }
         func medel(_ v: EnkatVariabel, _ villkor: Villkor) -> String {
@@ -407,7 +407,7 @@ struct SASTolkningVy: View {
                     Text("Spann").gridColumnAlignment(.trailing)
                     Text("Med mobil").gridColumnAlignment(.trailing)
                     Text("Utan mobil").gridColumnAlignment(.trailing)
-                    Text("r med OSPAN partial").gridColumnAlignment(.trailing)
+                    Text("r med O-Span partial").gridColumnAlignment(.trailing)
                     Text("r med SAS").gridColumnAlignment(.trailing)
                 }
                 .font(.subheadline.bold())
@@ -433,7 +433,7 @@ struct SASTolkningVy: View {
                 Text(anmarkning)
                     .foregroundStyle(.secondary)
             }
-            Text("Hela frågan visas när du håller pekaren över namnet. Sambanden räknas på de svar som är kopplade till en medräknad OSPAN-omgång.")
+            Text("Hela frågan visas när du håller pekaren över namnet. Sambanden räknas på de svar som är kopplade till en medräknad O-Span-omgång.")
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: 760, alignment: .leading)

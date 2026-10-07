@@ -22,7 +22,7 @@ struct DiagramFlik: View {
         if (v.gruppering.kraverEnkat && !harEnkat) || (v.gruppering == .ingen && !v.typ.tillaterOgrupperat) {
             v.gruppering = .villkor
         }
-        // Ett enkätmått som inte längre finns (enkäten borttagen eller utbytt) byts mot ett OSPAN-mått.
+        // Ett enkätmått som inte längre finns (enkäten borttagen eller utbytt) byts mot ett O-Span-mått.
         let valbara = Diagrammatt.alla(data.enkatVariabler).filter { !$0.kraverEnkat || harEnkat }
         if !valbara.contains(v.matt) { v.matt = .ospan(.ospanPartial) }
         if !valbara.contains(v.xMatt) { v.xMatt = harEnkat ? .sas : .ospan(.matteProcent) }
@@ -35,7 +35,7 @@ struct DiagramFlik: View {
             ContentUnavailableView {
                 Label("Inget att rita ännu", systemImage: "chart.bar")
             } description: {
-                Text("Läs in OSPAN-filer och kryssa i minst en deltagare som ska räknas med.")
+                Text("Läs in O-Span-filer och kryssa i minst en deltagare som ska räknas med.")
             }
         } else {
             let v = gallande

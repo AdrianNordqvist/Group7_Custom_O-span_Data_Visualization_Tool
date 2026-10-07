@@ -18,8 +18,8 @@ nonisolated enum Diagramsprak: String, CaseIterable, Identifiable, Sendable {
         switch m {
         case .ospan(let ospan):
             switch ospan {
-            case .ospanAbsolut: return "OSPAN absolute score"
-            case .ospanPartial: return "OSPAN partial score"
+            case .ospanAbsolut: return "O-Span absolute score"
+            case .ospanPartial: return "O-Span partial score"
             case .partialProcent: return "Letters correct"
             case .matteProcent: return "Math accuracy"
             case .matteRTMedel: return "Mean math RT"

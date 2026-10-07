@@ -1,4 +1,4 @@
-PROMPT HISTORY – OspanSammanstallning (OSPAN data compilation app)
+PROMPT HISTORY – OspanSammanstallning (O-Span data compilation app)
 ====================================================================
 
 Tool:      Claude Code in the Claude desktop app
@@ -19,7 +19,7 @@ PROMPTS THAT BUILT THE PROGRAM
 ====================================================================
 
 --- Prompt 1 · 30 September 2026 -----------------------------------
-Attached: "OspanExempleFile.csv" (an empty template with the 13 OSPAN column names)
+Attached: "OspanExempleFile.csv" (an empty template with the 13 O-Span column names)
 
 "gör en program i xcode som jag kan ladda upp all test data, lägger
 ihop allt, och skapar en stor csv där vi kan lätt jämföra alla
@@ -27,10 +27,10 @@ resultat på ospan och deras tider"
 
 [Make a program in Xcode where I can upload all the test data, that
 merges everything and creates one big CSV where we can easily compare
-all OSPAN results and their times.]
+all O-Span results and their times.]
 
 Result: the first version of the app.
-  - Reads the OSPAN test's .csv files and the older .txt files, one
+  - Reads the O-Span test's .csv files and the older .txt files, one
     file per participant, by drag and drop or from a whole folder.
   - Reads the condition (with phone / without phone) and the
     participant's name from the file name.
@@ -55,8 +55,8 @@ Result: a second tab, "Mobilanvändning (SAS-SV)".
   - Scores each survey answer 1–6 according to the Smartphone Addiction
     Scale – Short Version (Swedish and English answer labels).
   - Shows the total score and whether it is below or above the cutoff.
-  - Links each survey answer to the OSPAN run saved closest in time.
-  - Shows the scores per condition, the correlation with OSPAN and the
+  - Links each survey answer to the O-Span run saved closest in time.
+  - Shows the scores per condition, the correlation with O-Span and the
     mean per question.
   - Adds the SAS-SV columns to the CSV export.
 
@@ -74,7 +74,7 @@ Result: an analysis of the claim, and changes to the app so that it
 reads the complete survey file correctly.
   - All 10 questions are read, with their question texts.
   - The cutoff is chosen by gender (31 for men, 33 for women).
-  - The survey's own column with the OSPAN file name is used to link
+  - The survey's own column with the O-Span file name is used to link
     each answer to the right participant.
   - The survey's other number scales are no longer mistaken for SAS-SV
     questions.
@@ -145,3 +145,19 @@ Result: color pickers in the chart tab.
   - The chosen color follows the group in every chart and is saved
     between launches.
   - A button restores the default colors.
+
+
+--- Prompt 8 · 7 October 2026 --------------------------------------
+
+"Okej en till förändringar O-Span stavas "O-Span" ändra diagramet och
+över allt det står och puscha det till github"
+
+[Okay, one more change: O-Span is spelled "O-Span". Change the chart
+and everywhere it is written, and push it to GitHub.]
+
+Result: the test's name is written "O-Span" everywhere it is shown.
+  - In the app: the window title, the tab, the table headings, the
+    messages and the chart texts in both languages.
+  - In the README, in this file and in the name of the test folder.
+  - Column names in the exported CSV files, and file names, are
+    unchanged.

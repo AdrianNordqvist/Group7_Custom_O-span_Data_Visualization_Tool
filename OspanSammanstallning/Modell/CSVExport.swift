@@ -75,7 +75,7 @@ enum CSVExport {
         return f.dokument(rader)
     }
 
-    /// En rad per enkätsvar med SAS-SV-poäng och kopplad OSPAN-omgång.
+    /// En rad per enkätsvar med SAS-SV-poäng och kopplad O-Span-omgång.
     static func enkat(_ svar: [EnkatSvar], fragor: [String], variabler: [EnkatVariabel] = [],
                       kopplingar: [EnkatSvar.ID: Deltagare], format f: CSVFormat) -> String {
         // Första kolumnen är inte en tidsstämpel, så filen läses inte in igen som enkät.

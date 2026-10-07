@@ -25,7 +25,7 @@ struct DeltagarTabell: View {
                 .width(min: 90, ideal: 120)
             }
             Group {
-                TableColumn("OSPAN", value: \Deltagare.sammanfattning.ospanAbsolut) { (d: Deltagare) in
+                TableColumn("O-Span", value: \Deltagare.sammanfattning.ospanAbsolut) { (d: Deltagare) in
                     Siffra("\(d.sammanfattning.ospanAbsolut)")
                 }
                 .width(50)
