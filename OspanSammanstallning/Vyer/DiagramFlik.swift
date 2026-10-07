@@ -6,8 +6,14 @@ import UniformTypeIdentifiers
 struct DiagramFlik: View {
     let data: Sammanstallning
     @State private var val = Diagraminstallning()
+    /// De egna gruppfärgerna sparas mellan körningar (JSON: gruppnamn → RGB-hex).
+    @AppStorage("diagramfarger") private var sparadeFarger = Data()
 
     private var harEnkat: Bool { !data.enkatsvar.isEmpty }
+
+    private var farger: [String: UInt32] {
+        (try? JSONDecoder().decode([String: UInt32].self, from: sparadeFarger)) ?? [:]
+    }
 
     /// Valen med det som inte går att rita just nu utbytt mot något som går.
     private var gallande: Diagraminstallning {
@@ -20,6 +26,7 @@ struct DiagramFlik: View {
         let valbara = Diagrammatt.alla(data.enkatVariabler).filter { !$0.kraverEnkat || harEnkat }
         if !valbara.contains(v.matt) { v.matt = .ospan(.ospanPartial) }
         if !valbara.contains(v.xMatt) { v.xMatt = harEnkat ? .sas : .ospan(.matteProcent) }
+        v.farger = farger
         return v
     }
 
@@ -99,6 +106,17 @@ struct DiagramFlik: View {
                 .pickerStyle(.segmented)
             }
 
+            Section("Färger") {
+                ForEach(v.typ == .sasFragor ? underlag.enkatgrupper : underlag.grupper, id: \.self) { grupp in
+                    ColorPicker(grupp, selection: fargval(grupp, v.gruppering), supportsOpacity: false)
+                }
+                Button("Återställ standardfärgerna") { sparadeFarger = Data() }
+                    .disabled(farger.isEmpty)
+                Text("Färgen följer gruppen i alla diagram och sparas till nästa gång. Standardfärgerna går att skilja åt även vid färgblindhet.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section("Exportera") {
                 Button("Spara som PNG …") { spara(.png, v, underlag) }
                 Button("Spara som PDF …") { spara(.pdf, v, underlag) }
@@ -109,6 +127,20 @@ struct DiagramFlik: View {
             }
         }
         .formStyle(.grouped)
+    }
+
+    /// Kopplar Apples färgväljare till gruppens färg. Färgen lagras som sRGB utan genomskinlighet.
+    private func fargval(_ grupp: String, _ gruppering: Gruppering) -> Binding<Color> {
+        Binding(
+            get: { Diagramstil.farg(grupp, i: gruppering, egna: farger) },
+            set: { ny in
+                guard let srgb = NSColor(ny).usingColorSpace(.sRGB) else { return }
+                func kanal(_ v: CGFloat) -> UInt32 { UInt32((min(max(v, 0), 1) * 255).rounded()) }
+                var alla = farger
+                alla[grupp] = kanal(srgb.redComponent) << 16 | kanal(srgb.greenComponent) << 8 | kanal(srgb.blueComponent)
+                sparadeFarger = (try? JSONEncoder().encode(alla)) ?? Data()
+            }
+        )
     }
 
     private func mattval(_ rubrik: String, _ val: Binding<Diagrammatt>) -> some View {

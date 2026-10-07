@@ -10,13 +10,18 @@ enum Diagramstil {
     static let dampad = Color(hex: 0x898781)
     static let rutnat = Color(hex: 0xe1e0d9)
     static let baslinje = Color(hex: 0xc3c2b7)
-    static let serier = [Color(hex: 0x2a78d6), Color(hex: 0xeb6834), Color(hex: 0x1baf7a)]
+    static let serier: [UInt32] = [0x2a78d6, 0xeb6834, 0x1baf7a]
     static let stapel: CGFloat = 24
 
-    /// Färgen följer gruppen (dess plats i den fasta ordningen), inte ordningen i just det här diagrammet.
-    static func farg(_ grupp: String, i gruppering: Gruppering) -> Color {
-        guard let plats = gruppering.ordning.firstIndex(of: grupp), plats < serier.count else { return dampad }
+    /// Standardfärgen följer gruppen (dess plats i den fasta ordningen), inte ordningen i just det här diagrammet.
+    static func standardfarg(_ grupp: String, i gruppering: Gruppering) -> UInt32 {
+        guard let plats = gruppering.ordning.firstIndex(of: grupp), plats < serier.count else { return 0x898781 }
         return serier[plats]
+    }
+
+    /// Gruppens färg: den användaren har valt, annars standardfärgen.
+    static func farg(_ grupp: String, i gruppering: Gruppering, egna: [String: UInt32] = [:]) -> Color {
+        Color(hex: egna[grupp] ?? standardfarg(grupp, i: gruppering))
     }
 }
 
@@ -65,7 +70,7 @@ struct DiagramVy: View {
     }
 
     private func farg(_ grupp: String) -> Color {
-        Diagramstil.farg(grupp, i: underlag.gruppering)
+        Diagramstil.farg(grupp, i: underlag.gruppering, egna: val.farger)
     }
 
     /// Formen följer gruppen på samma sätt som färgen, så att diagrammet går att läsa i svartvitt.

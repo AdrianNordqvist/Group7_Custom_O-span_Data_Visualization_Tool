@@ -48,6 +48,7 @@ The app has three tabs.
 **Diagram** — charts
 - Six chart types: mean per group with error bars, box plot, one bar per participant, scatter plot with trend line, results per set size, and SAS-SV per question.
 - Choice of measure, grouping (condition, gender or SAS level), error bars, title, size and language.
+- A color for each group, chosen with the macOS color picker and saved between launches.
 - Export as PNG or PDF, or copy to the clipboard.
 - A suggested figure caption and a table of the values behind each chart.
 

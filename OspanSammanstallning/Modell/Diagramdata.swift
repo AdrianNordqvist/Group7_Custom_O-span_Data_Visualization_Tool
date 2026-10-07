@@ -188,6 +188,8 @@ nonisolated struct Diagraminstallning: Equatable, Sendable {
     var egenTitel = ""
     var storlek = Diagramstorlek.mellan
     var sprak = Diagramsprak.svenska
+    /// Egna färger per grupp som RGB-hex. Nyckeln är gruppens svenska namn ("Med mobil").
+    var farger: [String: UInt32] = [:]
 }
 
 /// Värden för en grupp, i samma ordning som deltagarna.
